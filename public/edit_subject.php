@@ -1,0 +1,63 @@
+<?php  require_once("../includes/session.php"); ?>
+<?php  require_once("../includes/db_connection.php"); ?>
+<?php  require_once("../includes/functions.php"); ?>
+<?php  include("../includes/layouts/header.php"); ?>
+<?php findSelectedSubject_Page(); ?>
+
+	<div id="main">
+		<div id="navigation">
+			<?php echo navigation($current_subject, $current_page); ?>
+		</div>
+		<div id="page">
+			<?php  
+				// show the session message, then clear it
+				echo sessionMessage(); 
+				clearSM();
+			?>
+			<h2>Edit Subjects: <?php echo $current_subject["menu_name"]; ?>
+			</h2>
+			<hr>
+			<form action="create_subject.php" method="post">
+				<p>Subject name:
+					<input type="text" name="menu_name" value=" <?php echo $current_subject["menu_name"]; ?>">
+				</p>
+				<p>Position:
+					<?php 
+						$total_subject_num = mysqli_num_rows(findAllSubjects());
+					 ?>
+					<select name="position">
+						<?php 
+							// create the list of positions by the count of "subjects"
+							for ($count=1; $count < $total_subject_num ; $count++) { 
+								echo "<option value=\"".$count."\"";
+								if ($current_subject["position"] == $count) {
+									echo " selected  ";
+								}
+								echo ">".$count."</option>";
+							}
+						 ?>
+					</select>
+				</p>
+				<p>Visible:
+					<input type="radio" name="visible" value="1" 
+					<?php if ($current_subject["visible"]) {
+							echo "checked";
+						}
+					 ?>
+					/> Yes 
+					&nbsp;
+					<input type="radio" name="visible" value="0"
+					<?php if (!$current_subject["visible"]) {
+							echo "checked";
+						}
+					 ?>
+					/> No
+				</p>
+				<input type="submit"  name="submit" value="Create Subject">
+			</form>
+			<br>
+			<a href="manage_content.php">Cancel</a>
+		</div>
+	</div><!-- end div main -->
+
+<?php  include("../includes/layouts/footer.php"); ?>

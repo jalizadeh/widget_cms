@@ -19,6 +19,7 @@
 				// show me the details of the clicked item
 				if (isset($current_subject)){
 					echo "<p>Subject Name: ". $current_subject["menu_name"] ."</p>";
+					echo "<a href=\"edit_subject.php?subject=".$current_subject["id"]."\">Edit subject</a>";
 				} elseif (isset($current_page)) {
 					echo "<p>Page Name: ". $current_page["menu_name"] ."</p>";
 				} else {
