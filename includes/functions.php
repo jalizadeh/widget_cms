@@ -1,5 +1,10 @@
 <?php 
 
+function redirectTo($new_location){
+	header("Location: ".$new_location);
+	exit;
+}
+
 function confirmQuery($result){
 	if(!$result){
 		die("Database query failed.");
@@ -7,12 +12,17 @@ function confirmQuery($result){
 }
 
 
+function mysqli_prep($string){
+	global $connection;
+
+	$escaped_string = mysqli_real_escape_string($connection,$string);
+	return $escaped_string;
+}
+
 function findAllSubjects(){
 	global  $connection;
 
-	$query = "SELECT * FROM subjects 
-				WHERE visible = 1 
-				ORDER BY position ASC";
+	$query = "SELECT * FROM subjects";
 
 	$subject_q = mysqli_query($connection, $query);
 	confirmQuery($subject_q);
@@ -34,6 +44,8 @@ function  findPagesForSubject($subject_id){
 }
 
 
+// will find only 1 result for the selected subject
+// recives the $subject_id from $_GET
 function findSelectedSubjectById($subject_id){
 	global $connection;
 
@@ -41,7 +53,7 @@ function findSelectedSubjectById($subject_id){
 	$query = "SELECT * FROM subjects
 				 WHERE id = {$safe_id}
 				 LIMIT 1";
-	$subject_set = mysqli_connect($connection, $query);
+	$subject_set = mysqli_query($connection, $query);
 	confirmQuery($subject_set);
 	if ($subject = mysqli_fetch_assoc($subject_set)){
 		return $subject;
@@ -50,6 +62,9 @@ function findSelectedSubjectById($subject_id){
 	}
 }
 
+
+// will find only 1 result for the selected page
+// recives the $page_id from $_GET
 function findSelectedPageById($page_id){
 	global $connection;
 
@@ -57,7 +72,7 @@ function findSelectedPageById($page_id){
 	$query = "SELECT * FROM pages
 				 WHERE id = {$safe_id}
 				 LIMIT 1";
-	$page_set = mysqli_connect($connection, $query);
+	$page_set = mysqli_query($connection, $query);
 	confirmQuery($page_set);
 	if ($page = mysqli_fetch_assoc($page_set)){
 		return $page;
@@ -68,31 +83,31 @@ function findSelectedPageById($page_id){
 
 
 function findSelectedSubject_Page(){
-	global $selected_subject_id;
-	global $selected_page_id;
+	global $current_subject;
+	global $current_page;
 
 	if(isset($_GET["subject"])){
-		$selected_subject_id = $_GET["subject"];
-		$selected_page_id = null;
+		$current_subject = findSelectedSubjectById($_GET["subject"]);
+		$current_page = null;
 	} elseif (isset($_GET["page"])){
-		$selected_subject_id = null;
-		$selected_page_id = $_GET["page"];
+		$current_subject = null;
+		$current_page = findSelectedPageById($_GET["page"]);
 	} else{
-		$selected_subject_id = null;
-		$selected_page_id = null;
+		$current_subject = null;
+		$current_page = null;
 	}
 }
 
 
 // it shows the navigation menu
 // also puts bullet beside the selected subject/page
-function navigation($subject_id, $page_id){
+function navigation($subject_array, $page_array){
 	$output = "<ul class=\"subjects\">";
 	$subjects = findAllSubjects();
 	while($subject_f = mysqli_fetch_assoc($subjects)){
 		$output .= "<li ";
 		// check to find the selected subject
-		if($subject_f["id"] == $subject_id ){
+		if($subject_f["id"] == $subject_array["id"] ){
 			$output .= "class=\"selected\"";
 		} 
 		$output .= ">";
@@ -104,7 +119,7 @@ function navigation($subject_id, $page_id){
 				$output .= "<li ";
 
 			// check to find the selected page
-			if($pages_f["id"] == $page_id ){
+			if($pages_f["id"] == $page_array["id"] ){
 				$output .= "class=\"selected\" ";
 			} 
 			$output .= "><a href=\"manage_content.php?page=".urlencode($pages_f["id"])."\">". $pages_f["menu_name"]."</a></li>";
