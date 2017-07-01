@@ -1,3 +1,4 @@
+<?php  require_once("../includes/session.php"); ?>
 <?php  require_once("../includes/db_connection.php"); ?>
 <?php  require_once("../includes/functions.php"); ?>
 <?php  include("../includes/layouts/header.php"); ?>
@@ -5,10 +6,17 @@
 	<div id="main">
 		<div id="navigation">
 			<?php echo navigation($current_subject, $current_page); ?>
+			<a href="new_subject.php">+ Add a new subject</a>
 		</div>
 		<div id="page">
+			<?php 
+				// show the session message, then clear it
+				echo sessionMessage(); 
+				clearSM(); 
+			?>
 			<h2>Manage Contents</h2>
 			<?php 
+				// show me the details of the clicked item
 				if (isset($current_subject)){
 					echo "<p>Subject Name: ". $current_subject["menu_name"] ."</p>";
 				} elseif (isset($current_page)) {

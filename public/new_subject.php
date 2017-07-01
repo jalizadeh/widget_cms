@@ -1,3 +1,4 @@
+<?php  require_once("../includes/session.php"); ?>
 <?php  require_once("../includes/db_connection.php"); ?>
 <?php  require_once("../includes/functions.php"); ?>
 <?php  include("../includes/layouts/header.php"); ?>
@@ -7,6 +8,11 @@
 			<?php echo navigation($current_subject, $current_page); ?>
 		</div>
 		<div id="page">
+			<?php  
+				// show the session message, then clear it
+				echo sessionMessage(); 
+				clearSM();
+			?>
 			<h2>Create Subjects</h2>
 			<hr>
 			<form action="create_subject.php" method="post">
@@ -19,6 +25,7 @@
 					 ?>
 					<select name="position">
 						<?php 
+							// create the list of positions by the count of "subjects"
 							for ($count=1; $count < ($total_subject_num+1) ; $count++) { 
 								echo "<option value=\"".$count."\">".$count."</option>";
 							}
@@ -26,9 +33,9 @@
 					</select>
 				</p>
 				<p>Visible:
-					<input type="radio" name="visible" value="1">
+					<input type="radio" name="visible" value="1"/> Yes 
 					&nbsp;
-					<input type="radio" name="visible" value="0">
+					<input type="radio" name="visible" value="0"/> No
 				</p>
 				<input type="submit"  name="submit" value="Create Subject">
 			</form>

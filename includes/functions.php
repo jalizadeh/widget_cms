@@ -5,13 +5,14 @@ function redirectTo($new_location){
 	exit;
 }
 
+
 function confirmQuery($result){
 	if(!$result){
 		die("Database query failed.");
 	}
 }
 
-
+// prepare the query for security
 function mysqli_prep($string){
 	global $connection;
 
@@ -19,11 +20,11 @@ function mysqli_prep($string){
 	return $escaped_string;
 }
 
+// find all subjects ~/visible inside subjects
 function findAllSubjects(){
 	global  $connection;
 
 	$query = "SELECT * FROM subjects";
-
 	$subject_q = mysqli_query($connection, $query);
 	confirmQuery($subject_q);
 	return $subject_q;
@@ -81,7 +82,8 @@ function findSelectedPageById($page_id){
 	}
 }
 
-
+// by clicking on the navigation menu, it will select which item is clicked
+// then will change the css + load the data
 function findSelectedSubject_Page(){
 	global $current_subject;
 	global $current_page;
