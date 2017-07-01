@@ -18,12 +18,24 @@
 			<?php 
 				// show me the details of the clicked item
 				if (isset($current_subject)){
-					echo "<p>Subject Name: ". $current_subject["menu_name"] ."</p>";
+					echo "<p>Subject Name: ". htmlentities($current_subject["menu_name"])."</p>";
+					echo "<p>Subject Position: ". $current_subject["position"] ."</p>";
+					echo "<p>Subject Visible: ";
+					echo  $current_subject["visible"] ==1 ? 'Yes' : 'No';
+					echo "</p>";
+					echo "<br>";
 					echo "<a href=\"edit_subject.php?subject=".$current_subject["id"]."\">Edit subject</a>";
 				} elseif (isset($current_page)) {
-					echo "<p>Page Name: ". $current_page["menu_name"] ."</p>";
+					echo "<p>Page Name: ". htmlentities($current_page["menu_name"])."</p>";
+					echo "<p>Page Position: ". $current_page["position"] ."</p>";
+					echo "<p>Page Visible: ";
+					echo  $current_page["visible"] ==1 ? 'Yes' : 'No';
+					echo "</p>";
+					echo "<br>";
+					echo "<div class=\"page-content\">" .  $current_page["content"] ."</div>";
+					
 				} else {
-					echo "<p>please select</p>";
+					echo "<p>Please select a subject or page</p>";
 				}
 
 			?>

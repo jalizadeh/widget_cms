@@ -1,5 +1,6 @@
+	
 	<div id="footer">
-		Copyright by Javad Alizadeh 2017	
+		Copyright by Javad Alizadeh <?php echo date("Y/M/D"); ?>
 	</div>
 </body>
 </html>
