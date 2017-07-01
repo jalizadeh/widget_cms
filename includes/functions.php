@@ -24,7 +24,8 @@ function mysqli_prep($string){
 function findAllSubjects(){
 	global  $connection;
 
-	$query = "SELECT * FROM subjects";
+	$query = "SELECT * FROM subjects
+				 ORDER BY position";
 	$subject_q = mysqli_query($connection, $query);
 	confirmQuery($subject_q);
 	return $subject_q;

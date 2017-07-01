@@ -4,6 +4,34 @@
 <?php  include("../includes/layouts/header.php"); ?>
 <?php findSelectedSubject_Page(); ?>
 
+<?php 
+	// protect this page from direct access
+	// only must be accessed through new_subject.php, first I check the "POST"
+	if(isset($_POST["submit"])){
+		$id = (int) $current_subject["id"];
+		$menu_name = mysqli_prep($_POST["menu_name"]);
+		$position = (int) $_POST["position"];
+		$visible = (bool) $_POST["visible"];
+
+		$query = "UPDATE subjects 
+					SET menu_name = '{$menu_name}' ,
+					 position = '{$position}',
+					 visible = '{$visible}'
+					WHERE id = {$id} 
+					 LIMIT 1";
+		$result = mysqli_query($connection, $query);
+
+		if($result && mysqli_affected_rows($connection) ==1){
+			$_SESSION["message"] = "Subject successfully updated.";
+			redirectTo("manage_content.php");
+		} else {
+			$_SESSION["message"] = "Error.";
+			// redirectTo("new_subject.php");
+		}
+
+	} 		
+ ?>
+	
 	<div id="main">
 		<div id="navigation">
 			<?php echo navigation($current_subject, $current_page); ?>
@@ -17,9 +45,9 @@
 			<h2>Edit Subjects: <?php echo $current_subject["menu_name"]; ?>
 			</h2>
 			<hr>
-			<form action="create_subject.php" method="post">
+			<form action="edit_subject.php?subject=<?php echo $current_subject["id"]; ?>" method="post">
 				<p>Subject name:
-					<input type="text" name="menu_name" value=" <?php echo $current_subject["menu_name"]; ?>">
+					<input type="text" name="menu_name" value="<?php echo $current_subject["menu_name"]; ?>">
 				</p>
 				<p>Position:
 					<?php 
@@ -53,10 +81,13 @@
 					 ?>
 					/> No
 				</p>
-				<input type="submit"  name="submit" value="Create Subject">
+				<input type="submit"  name="submit" value="Save Edits">
 			</form>
 			<br>
 			<a href="manage_content.php">Cancel</a>
+			&nbsp;
+			&nbsp;
+			<a href="delete_subject.php?subject=<?php echo $current_subject["id"]; ?>" onclick="return confirm('Are you sure?')" >Delete subject</a>
 		</div>
 	</div><!-- end div main -->
 
